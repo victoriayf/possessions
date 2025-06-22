@@ -614,33 +614,21 @@
     </div>
 
     <!-- Firebase SDK -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-firestore-compat.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
     <script>
         // Firebase configuration - YOU NEED TO REPLACE THIS WITH YOUR OWN CONFIG
-        // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-		const firebaseConfig = {
-		  apiKey: "AIzaSyD88b3EXr5Sc5MK1n1iadUeFDTqyxhpaAs",
-		  authDomain: "possessions-988a8.firebaseapp.com",
-		  projectId: "possessions-988a8",
-		  storageBucket: "possessions-988a8.firebasestorage.app",
-		  messagingSenderId: "170290770064",
-		  appId: "1:170290770064:web:2bc3c9f6e8706e1994a815",
-		  measurementId: "G-CBK7S6Q8RS"
-		};
-
-		// Initialize Firebase
-		const app = initializeApp(firebaseConfig);
-		const analytics = getAnalytics(app);
+        const firebaseConfig = {
+          apiKey: "AIzaSyD88b3EXr5Sc5MK1n1iadUeFDTqyxhpaAs",
+          authDomain: "possessions-988a8.firebaseapp.com",
+          projectId: "possessions-988a8",
+          storageBucket: "possessions-988a8.firebasestorage.app",
+          messagingSenderId: "170290770064",
+          appId: "1:170290770064:web:2bc3c9f6e8706e1994a815",
+          measurementId: "G-CBK7S6Q8RS"
+        };
 
         // Initialize Firebase
         let app, auth, db, currentUser = null;
