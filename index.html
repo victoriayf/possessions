@@ -1041,14 +1041,24 @@
 
         // Initialize Firebase when page loads
         document.addEventListener('DOMContentLoaded', function() {
+            // Check if Firebase config is set
+            if (firebaseConfig.apiKey === "YOUR_API_KEY_HERE") {
+                showAuthError('Firebase configuration needed. Please follow the setup instructions.');
+                document.getElementById('setupInstructions').style.display = 'block';
+                return;
+            }
+
             try {
                 app = firebase.initializeApp(firebaseConfig);
                 auth = firebase.auth();
                 db = firebase.firestore();
                 storage = firebase.storage();
 
+                console.log('Firebase initialized successfully');
+
                 // Auth state listener
                 auth.onAuthStateChanged(user => {
+                    console.log('Auth state changed:', user ? 'signed in' : 'signed out');
                     if (user) {
                         currentUser = user;
                         showMainApp();
@@ -1059,16 +1069,48 @@
                     }
                 });
             } catch (error) {
-                showError('Firebase configuration needed. Please follow the setup instructions below.');
                 console.error('Firebase initialization error:', error);
+                showAuthError('Firebase setup error: ' + error.message + '. Please check your configuration.');
+                document.getElementById('setupInstructions').style.display = 'block';
             }
         });
 
         // Authentication functions
         function signInWithGoogle() {
+            const signInBtn = document.getElementById('signInBtn');
+            signInBtn.disabled = true;
+            signInBtn.textContent = 'signing in...';
+            
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).catch(error => {
-                showAuthError('Sign in failed: ' + error.message);
+            provider.addScope('email');
+            provider.addScope('profile');
+            
+            auth.signInWithPopup(provider).then(result => {
+                // Success - auth state listener will handle the rest
+                console.log('Sign in successful');
+            }).catch(error => {
+                console.error('Sign in error:', error);
+                signInBtn.disabled = false;
+                signInBtn.textContent = 'sign in with google';
+                
+                let errorMessage = 'Sign in failed: ';
+                switch(error.code) {
+                    case 'auth/popup-closed-by-user':
+                        errorMessage += 'Sign in was cancelled';
+                        break;
+                    case 'auth/popup-blocked':
+                        errorMessage += 'Popup was blocked by browser. Please allow popups and try again';
+                        break;
+                    case 'auth/unauthorized-domain':
+                        errorMessage += 'This domain is not authorized. Please add it to Firebase Authentication settings';
+                        break;
+                    case 'auth/operation-not-allowed':
+                        errorMessage += 'Google sign-in is not enabled. Please enable it in Firebase console';
+                        break;
+                    default:
+                        errorMessage += error.message;
+                }
+                showAuthError(errorMessage);
             });
         }
 
@@ -1079,6 +1121,11 @@
         function showAuthScreen() {
             document.getElementById('authContainer').style.display = 'flex';
             document.getElementById('mainContainer').classList.remove('show');
+            
+            // Reset sign in button
+            const signInBtn = document.getElementById('signInBtn');
+            signInBtn.disabled = false;
+            signInBtn.textContent = 'sign in with google';
         }
 
         function showMainApp() {
@@ -1682,5 +1729,24 @@
         });
     </script>
 
+    <!-- Setup Instructions (remove after configuration) -->
+    <div id="setupInstructions" style="position: fixed; bottom: 20px; left: 20px; background: rgba(248, 246, 240, 0.95); padding: 20px; border-radius: 15px; max-width: 400px; font-size: 0.9rem; color: #5d4e37; z-index: 1001; display: none;">
+        <h4 style="margin-bottom: 10px;">🔧 Setup Required</h4>
+        <p style="margin-bottom: 10px;">To use this app, you need to:</p>
+        <ol style="margin-left: 20px; margin-bottom: 15px;">
+            <li>Create a Firebase project at <a href="https://console.firebase.google.com" target="_blank" style="color: #6b5b73;">console.firebase.google.com</a></li>
+            <li>Enable Authentication (Google sign-in)</li>
+            <li>Enable Firestore Database</li>
+            <li>Replace the Firebase config in the code</li>
+        </ol>
+        <button onclick="this.parentElement.style.display='none'" style="background: #8b7d6b; color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer;">got it</button>
+    </div>
+
+    <script>
+        // Show setup instructions if Firebase config is not set
+        if (firebaseConfig.apiKey === "YOUR_API_KEY_HERE") {
+            document.getElementById('setupInstructions').style.display = 'block';
+        }
+    </script>
 </body>
 </html>
