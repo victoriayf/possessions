@@ -835,7 +835,7 @@
         <div class="auth-box">
             <h2>Welcome to Your Product Library</h2>
             <p>Please sign in to access your products from any device</p>
-            <button onclick="signInWithGoogle()" id="signInBtn">sign in with google</button>
+            <button onclick="handleSignIn()" id="signInBtn">sign in with google</button>
             <div id="authError" class="error" style="display: none; margin-top: 20px;"></div>
         </div>
     </div>
@@ -1075,7 +1075,11 @@
             }
         });
 
-        // Authentication functions
+        // Authentication functions - defined globally
+        function handleSignIn() {
+            signInWithGoogle();
+        }
+
         function signInWithGoogle() {
             const signInBtn = document.getElementById('signInBtn');
             signInBtn.disabled = true;
